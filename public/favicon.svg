@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="#4F46E5"/>
+  
+  <!-- Folder Design -->
+  <path d="M128 160C128 146.745 138.745 136 152 136H232C245.255 136 256 146.745 256 160V176H360C373.255 176 384 186.745 384 200V352C384 365.255 373.255 376 360 376H152C138.745 376 128 365.255 128 352V160Z" fill="white"/>
+  
+  <!-- Decorative Lines -->
+  <path d="M176 232H336" stroke="#4F46E5" stroke-width="24" stroke-linecap="round"/>
+  <path d="M176 288H336" stroke="#4F46E5" stroke-width="24" stroke-linecap="round"/>
+  <path d="M176 344H256" stroke="#4F46E5" stroke-width="24" stroke-linecap="round"/>
+</svg>
