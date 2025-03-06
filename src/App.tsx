@@ -77,6 +77,7 @@ function App() {
     } catch (err) {
       console.error('Login error:', err);
       setError('Failed to sign in');
+      throw err; // Propagate error to Login component
     } finally {
       setIsLoggingIn(false);
     }
@@ -95,6 +96,7 @@ function App() {
 
   const loadDriveFiles = async () => {
     try {
+      setError(null);
       const response = await gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, modifiedTime, size)',
         pageSize: 50,
@@ -111,6 +113,7 @@ function App() {
 
   const handleUpload = async (file: File) => {
     try {
+      setError(null);
       setIsUploading(true);
       const metadata = {
         name: file.name,
@@ -148,14 +151,25 @@ function App() {
 
   const handleDelete = async (fileId: string) => {
     try {
+      setError(null);
       setIsDeleting(prev => ({ ...prev, [fileId]: true }));
-      await gapi.client.drive.files.delete({
+      
+      const response = await gapi.client.drive.files.delete({
         fileId: fileId,
       });
+
+      if (response.status !== 204) {
+        throw new Error(`Delete failed with status: ${response.status}`);
+      }
+
       setFiles(files.filter(file => file.id !== fileId));
+      // Show success message
+      const successMessage = 'File deleted successfully';
+      setError(successMessage);
+      setTimeout(() => setError(null), 3000); // Clear success message after 3 seconds
     } catch (err) {
       console.error('Delete error:', err);
-      setError('Failed to delete file');
+      setError('Failed to delete file. Please try again.');
     } finally {
       setIsDeleting(prev => ({ ...prev, [fileId]: false }));
     }
@@ -163,6 +177,7 @@ function App() {
 
   const handleDownload = async (file: GoogleFile) => {
     try {
+      setError(null);
       const response = await gapi.client.drive.files.get({
         fileId: file.id,
         alt: 'media',
@@ -220,11 +235,11 @@ function App() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
+          <div className={`mb-6 p-4 ${error.includes('successfully') ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700'} rounded-lg flex items-center justify-between`}>
+            <span>{error}</span>
             <button 
               onClick={() => setError(null)} 
-              className="ml-2 text-red-700 hover:text-red-800"
+              className={`ml-2 ${error.includes('successfully') ? 'text-green-700 hover:text-green-800' : 'text-red-700 hover:text-red-800'}`}
             >
               ×
             </button>
